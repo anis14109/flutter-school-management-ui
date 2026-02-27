@@ -35,12 +35,46 @@ class _DashboardPageState extends State<DashboardPage> {
     const HomeView(),
     const AnalyticsView(),
     const SettingsView(),
+    const AnalyticsView(),
+    const SettingsView(),
+    const HomeView(),
+    const AnalyticsView(),
+    const SettingsView(),
   ];
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  Widget _buildNavItem(int index, IconData selectedIcon, IconData icon, String label) {
+    final isSelected = _selectedIndex == index;
+    return InkWell(
+      onTap: () => _onItemTapped(index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isSelected ? selectedIcon : icon,
+              color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey,
+              size: 24,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -50,6 +84,12 @@ class _DashboardPageState extends State<DashboardPage> {
         title: const Text('Dashboard'),
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openEndDrawer(),
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
@@ -57,7 +97,7 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
         ],
       ),
-      drawer: const NavigationDrawerWidget(),
+      endDrawer: const NavigationDrawerWidget(),
       body: _pages[_selectedIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -67,26 +107,34 @@ class _DashboardPageState extends State<DashboardPage> {
         },
         child: const Icon(Icons.add),
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: _onItemTapped,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
+      bottomNavigationBar: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildNavItem(0, Icons.home, Icons.home_outlined, 'Home'),
+              _buildNavItem(1, Icons.analytics, Icons.analytics_outlined, 'Analytics'),
+              _buildNavItem(2, Icons.settings, Icons.settings_outlined, 'Settings'),
+              _buildNavItem(3, Icons.person, Icons.person_outlined, 'Profile'),
+              _buildNavItem(4, Icons.shopping_cart, Icons.shopping_cart_outlined, 'Orders'),
+              _buildNavItem(5, Icons.favorite, Icons.favorite_outline, 'Wishlist'),
+              _buildNavItem(6, Icons.chat, Icons.chat_outlined, 'Messages'),
+              _buildNavItem(7, Icons.notifications, Icons.notifications_outlined, 'Alerts'),
+            ],
           ),
-          NavigationDestination(
-            icon: Icon(Icons.analytics_outlined),
-            selectedIcon: Icon(Icons.analytics),
-            label: 'Analytics',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
+        ),
       ),
     );
   }
