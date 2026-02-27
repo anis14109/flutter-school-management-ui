@@ -4,26 +4,34 @@ import '../data/menu_data.dart';
 import '../widgets/navigation_drawer.dart';
 import '../widgets/menu_card.dart';
 
-class DashboardScreen extends ConsumerWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: const Text('School Management'),
-        centerTitle: true,
+        centerTitle: false,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () => Scaffold.of(context).openEndDrawer(),
-          ),
-        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              _scaffoldKey.currentState?.openEndDrawer();
+            },
           ),
         ],
       ),
