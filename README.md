@@ -1,4 +1,4 @@
-# School Management Dashboard
+# School Management Dashboard UI
 
 A modern Flutter UI application for school management with Riverpod state management.
 
