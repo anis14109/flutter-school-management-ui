@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Dashboard',
+      title: 'School Management',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -21,67 +21,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class DashboardPage extends StatefulWidget {
+class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
-
-  @override
-  State<DashboardPage> createState() => _DashboardPageState();
-}
-
-class _DashboardPageState extends State<DashboardPage> {
-  int _selectedIndex = 0;
-
-  final List<Widget> _pages = [
-    const HomeView(),
-    const AnalyticsView(),
-    const SettingsView(),
-    const AnalyticsView(),
-    const SettingsView(),
-    const HomeView(),
-    const AnalyticsView(),
-    const SettingsView(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  Widget _buildNavItem(int index, IconData selectedIcon, IconData icon, String label) {
-    final isSelected = _selectedIndex == index;
-    return InkWell(
-      onTap: () => _onItemTapped(index),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isSelected ? selectedIcon : icon,
-              color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey,
-              size: 24,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: const Text('School Management'),
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: Builder(
@@ -98,43 +45,10 @@ class _DashboardPageState extends State<DashboardPage> {
         ],
       ),
       endDrawer: const NavigationDrawerWidget(),
-      body: _pages[_selectedIndex],
+      body: const DashboardBody(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('FAB Pressed')),
-          );
-        },
+        onPressed: () {},
         child: const Icon(Icons.add),
-      ),
-      bottomNavigationBar: Container(
-        height: 80,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildNavItem(0, Icons.home, Icons.home_outlined, 'Home'),
-              _buildNavItem(1, Icons.analytics, Icons.analytics_outlined, 'Analytics'),
-              _buildNavItem(2, Icons.settings, Icons.settings_outlined, 'Settings'),
-              _buildNavItem(3, Icons.person, Icons.person_outlined, 'Profile'),
-              _buildNavItem(4, Icons.shopping_cart, Icons.shopping_cart_outlined, 'Orders'),
-              _buildNavItem(5, Icons.favorite, Icons.favorite_outline, 'Wishlist'),
-              _buildNavItem(6, Icons.chat, Icons.chat_outlined, 'Messages'),
-              _buildNavItem(7, Icons.notifications, Icons.notifications_outlined, 'Alerts'),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -150,14 +64,11 @@ class NavigationDrawerWidget extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: const Text('John Doe'),
-            accountEmail: const Text('john.doe@example.com'),
+            accountName: const Text('Admin'),
+            accountEmail: const Text('admin@school.com'),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Theme.of(context).colorScheme.primary,
-              child: const Text(
-                'JD',
-                style: TextStyle(color: Colors.white),
-              ),
+              child: const Text('A', style: TextStyle(color: Colors.white)),
             ),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
@@ -178,28 +89,6 @@ class NavigationDrawerWidget extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.shopping_cart),
-            title: const Text('Orders'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.favorite),
-            title: const Text('Wishlist'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.help_outline),
-            title: const Text('Help & Support'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () {
@@ -212,28 +101,66 @@ class NavigationDrawerWidget extends StatelessWidget {
   }
 }
 
-class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+class DashboardBody extends StatelessWidget {
+  const DashboardBody({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final menuItems = [
+      MenuItem('Students', Icons.school, Colors.blue, const StudentsPage()),
+      MenuItem('Teachers', Icons.person, Colors.green, const TeachersPage()),
+      MenuItem(
+        'Parents',
+        Icons.family_restroom,
+        Colors.orange,
+        const ParentsPage(),
+      ),
+      MenuItem(
+        'Attendance',
+        Icons.check_circle,
+        Colors.purple,
+        const AttendancePage(),
+      ),
+      MenuItem('Exams', Icons.assignment, Colors.red, const ExamsPage()),
+      MenuItem('Results', Icons.grade, Colors.teal, const ResultsPage()),
+      MenuItem('Fees', Icons.payment, Colors.indigo, const FeesPage()),
+      MenuItem(
+        'Library',
+        Icons.library_books,
+        Colors.brown,
+        const LibraryPage(),
+      ),
+      MenuItem(
+        'Transport',
+        Icons.directions_bus,
+        Colors.amber,
+        const TransportPage(),
+      ),
+      MenuItem(
+        'Notice Board',
+        Icons.campaign,
+        Colors.pink,
+        const NoticeBoardPage(),
+      ),
+    ];
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Welcome back!',
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            'Welcome, Admin!',
+            style: Theme.of(
+              context,
+            ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(
-            'Here\'s your overview',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey[600],
-                ),
+            'Manage your school efficiently',
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
           ),
           const SizedBox(height: 24),
           GridView.count(
@@ -242,46 +169,10 @@ class HomeView extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             mainAxisSpacing: 16,
             crossAxisSpacing: 16,
-            childAspectRatio: 1.5,
-            children: const [
-              StatCard(
-                title: 'Total Sales',
-                value: '\$12,450',
-                icon: Icons.attach_money,
-                color: Colors.green,
-              ),
-              StatCard(
-                title: 'Orders',
-                value: '1,234',
-                icon: Icons.shopping_bag,
-                color: Colors.orange,
-              ),
-              StatCard(
-                title: 'Customers',
-                value: '5,678',
-                icon: Icons.people,
-                color: Colors.blue,
-              ),
-              StatCard(
-                title: 'Revenue',
-                value: '\$45,678',
-                icon: Icons.trending_up,
-                color: Colors.purple,
-              ),
-            ],
+            children: menuItems
+                .map((item) => _buildMenuCard(context, item))
+                .toList(),
           ),
-          const SizedBox(height: 24),
-          Text(
-            'Recent Activity',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          const SizedBox(height: 16),
-          _buildActivityItem(context, 'New order placed', '2 minutes ago', Icons.shopping_cart),
-          _buildActivityItem(context, 'Customer registered', '15 minutes ago', Icons.person_add),
-          _buildActivityItem(context, 'Payment received', '1 hour ago', Icons.payment),
-          _buildActivityItem(context, 'New message received', '3 hours ago', Icons.message),
         ],
       ),
     );
@@ -289,233 +180,694 @@ class HomeView extends StatelessWidget {
 
   int _getCrossAxisCount(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    if (width > 1200) return 4;
-    if (width > 800) return 3;
-    if (width > 600) return 2;
-    return 1;
+    if (width > 1200) return 5;
+    if (width > 900) return 4;
+    if (width > 600) return 3;
+    return 2;
   }
 
-  Widget _buildActivityItem(BuildContext context, String title, String time, IconData icon) {
+  Widget _buildMenuCard(BuildContext context, MenuItem item) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          child: Icon(icon, color: Theme.of(context).colorScheme.primary),
+      elevation: 2,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => item.page),
+          );
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: item.color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(item.icon, color: item.color, size: 32),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                item.title,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
-        title: Text(title),
-        subtitle: Text(time),
-        trailing: const Icon(Icons.chevron_right),
       ),
     );
   }
 }
 
-class StatCard extends StatelessWidget {
+class MenuItem {
   final String title;
-  final String value;
   final IconData icon;
   final Color color;
+  final Widget page;
 
-  const StatCard({
+  MenuItem(this.title, this.icon, this.color, this.page);
+}
+
+class PageWithBottomNav extends StatefulWidget {
+  final String title;
+  final List<BottomNavItem> navItems;
+  final List<Widget> pages;
+  final int initialIndex;
+
+  const PageWithBottomNav({
     super.key,
     required this.title,
-    required this.value,
-    required this.icon,
-    required this.color,
+    required this.navItems,
+    required this.pages,
+    this.initialIndex = 0,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(icon, color: color, size: 24),
-                ),
-                Icon(Icons.more_vert, color: Colors.grey[400]),
-              ],
-            ),
-            const Spacer(),
-            Text(
-              value,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[600],
-                  ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  State<PageWithBottomNav> createState() => _PageWithBottomNavState();
 }
 
-class AnalyticsView extends StatelessWidget {
-  const AnalyticsView({super.key});
+class _PageWithBottomNavState extends State<PageWithBottomNav> {
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex.clamp(0, widget.pages.length - 1);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Analytics',
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+    final validIndex = _selectedIndex.clamp(0, widget.pages.length - 1);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
           ),
-          const SizedBox(height: 24),
-          _buildChartCard(context, 'Sales Overview', 'Monthly revenue chart'),
-          const SizedBox(height: 16),
-          _buildChartCard(context, 'Traffic', 'Visitor statistics'),
-          const SizedBox(height: 16),
-          _buildChartCard(context, 'Conversion Rate', 'Performance metrics'),
-        ],
+        ),
+        actions: [IconButton(icon: const Icon(Icons.search), onPressed: () {})],
       ),
-    );
-  }
-
-  Widget _buildChartCard(BuildContext context, String title, String subtitle) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              height: 150,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.bar_chart,
-                  size: 50,
-                  color: Colors.grey[400],
-                ),
-              ),
+      body: widget.pages[validIndex],
+      bottomNavigationBar: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, -2),
             ),
           ],
         ),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: widget.navItems.asMap().entries.map((entry) {
+              final index = entry.key;
+              final item = entry.value;
+              return _buildNavItem(
+                index,
+                item.selectedIcon,
+                item.icon,
+                item.label,
+              );
+            }).toList(),
+          ),
+        ),
       ),
-    );
-  }
-}
-
-class SettingsView extends StatelessWidget {
-  const SettingsView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Settings',
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          const SizedBox(height: 24),
-          _buildSettingsSection(
-            context,
-            'Account',
-            [
-              _buildSettingsTile(context, Icons.person, 'Edit Profile'),
-              _buildSettingsTile(context, Icons.lock, 'Change Password'),
-              _buildSettingsTile(context, Icons.security, 'Privacy'),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _buildSettingsSection(
-            context,
-            'Preferences',
-            [
-              _buildSettingsTile(context, Icons.notifications, 'Notifications'),
-              _buildSettingsTile(context, Icons.language, 'Language'),
-              _buildSettingsTile(context, Icons.dark_mode, 'Dark Mode'),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _buildSettingsSection(
-            context,
-            'Support',
-            [
-              _buildSettingsTile(context, Icons.help, 'Help Center'),
-              _buildSettingsTile(context, Icons.feedback, 'Send Feedback'),
-              _buildSettingsTile(context, Icons.info, 'About'),
-            ],
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  Widget _buildSettingsSection(
-    BuildContext context,
-    String title,
-    List<Widget> children,
+  Widget _buildNavItem(
+    int index,
+    IconData selectedIcon,
+    IconData icon,
+    String label,
   ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
+    final isSelected = _selectedIndex == index;
+    return InkWell(
+      onTap: () => setState(() => _selectedIndex = index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isSelected ? selectedIcon : icon,
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.grey,
+              size: 24,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.grey,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
+            ),
+          ],
         ),
-        const SizedBox(height: 12),
-        Card(
-          child: Column(children: children),
-        ),
+      ),
+    );
+  }
+}
+
+class BottomNavItem {
+  final IconData selectedIcon;
+  final IconData icon;
+  final String label;
+
+  BottomNavItem(this.selectedIcon, this.icon, this.label);
+}
+
+class StudentsPage extends StatelessWidget {
+  const StudentsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return PageWithBottomNav(
+      title: 'Students',
+      navItems: [
+        BottomNavItem(Icons.people, Icons.people_outline, 'All Students'),
+        BottomNavItem(Icons.person_add, Icons.person_add_outlined, 'Add New'),
+        BottomNavItem(Icons.badge, Icons.badge_outlined, 'ID Cards'),
+        BottomNavItem(Icons.download, Icons.download_outlined, 'Export'),
+        BottomNavItem(Icons.people, Icons.people_outline, 'All Students'),
+        BottomNavItem(Icons.person_add, Icons.person_add_outlined, 'Add New'),
+        BottomNavItem(Icons.badge, Icons.badge_outlined, 'ID Cards'),
+        BottomNavItem(Icons.download, Icons.download_outlined, 'Export'),
+        BottomNavItem(Icons.people, Icons.people_outline, 'All Students'),
+        BottomNavItem(Icons.person_add, Icons.person_add_outlined, 'Add New'),
+        BottomNavItem(Icons.badge, Icons.badge_outlined, 'ID Cards'),
+        BottomNavItem(Icons.download, Icons.download_outlined, 'Export'),
+      ],
+      pages: [
+        const AllStudentsView(),
+        const AddStudentView(),
+        const IdCardsView(),
+        const ExportView(),
       ],
     );
   }
+}
 
-  Widget _buildSettingsTile(BuildContext context, IconData icon, String title) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {},
+class TeachersPage extends StatelessWidget {
+  const TeachersPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return PageWithBottomNav(
+      title: 'Teachers',
+      navItems: [
+        BottomNavItem(Icons.people, Icons.people_outline, 'All Teachers'),
+        BottomNavItem(Icons.person_add, Icons.person_add_outlined, 'Add New'),
+        BottomNavItem(Icons.schedule, Icons.schedule_outlined, 'Schedule'),
+        BottomNavItem(Icons.school, Icons.school_outlined, 'Subjects'),
+      ],
+      pages: [
+        const AllTeachersView(),
+        const AddTeacherView(),
+        const TeacherScheduleView(),
+        const TeacherSubjectsView(),
+      ],
     );
+  }
+}
+
+class ParentsPage extends StatelessWidget {
+  const ParentsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return PageWithBottomNav(
+      title: 'Parents',
+      navItems: [
+        BottomNavItem(Icons.people, Icons.people_outline, 'All Parents'),
+        BottomNavItem(Icons.message, Icons.message_outlined, 'Messages'),
+        BottomNavItem(Icons.feedback, Icons.feedback_outlined, 'Feedback'),
+      ],
+      pages: [
+        const AllParentsView(),
+        const ParentMessagesView(),
+        const ParentFeedbackView(),
+      ],
+    );
+  }
+}
+
+class AttendancePage extends StatelessWidget {
+  const AttendancePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return PageWithBottomNav(
+      title: 'Attendance',
+      navItems: [
+        BottomNavItem(Icons.check_circle, Icons.check_circle_outline, 'Mark'),
+        BottomNavItem(Icons.history, Icons.history_outlined, 'Records'),
+        BottomNavItem(Icons.analytics, Icons.analytics_outlined, 'Reports'),
+      ],
+      pages: [
+        const MarkAttendanceView(),
+        const AttendanceRecordsView(),
+        const AttendanceReportsView(),
+      ],
+    );
+  }
+}
+
+class ExamsPage extends StatelessWidget {
+  const ExamsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return PageWithBottomNav(
+      title: 'Exams',
+      navItems: [
+        BottomNavItem(Icons.assignment, Icons.assignment_outlined, 'Schedule'),
+        BottomNavItem(Icons.add_circle, Icons.add_circle_outline, 'Create'),
+        BottomNavItem(Icons.timer, Icons.timer_outlined, 'Seating'),
+      ],
+      pages: [
+        const ExamScheduleView(),
+        const CreateExamView(),
+        const SeatingPlanView(),
+      ],
+    );
+  }
+}
+
+class ResultsPage extends StatelessWidget {
+  const ResultsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return PageWithBottomNav(
+      title: 'Results',
+      navItems: [
+        BottomNavItem(Icons.grade, Icons.grade_outlined, 'Publish'),
+        BottomNavItem(Icons.analytics, Icons.analytics_outlined, 'Analysis'),
+        BottomNavItem(Icons.download, Icons.download_outlined, 'Download'),
+      ],
+      pages: [
+        const PublishResultsView(),
+        const ResultAnalysisView(),
+        const DownloadResultsView(),
+      ],
+    );
+  }
+}
+
+class FeesPage extends StatelessWidget {
+  const FeesPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return PageWithBottomNav(
+      title: 'Fees',
+      navItems: [
+        BottomNavItem(Icons.payment, Icons.payment_outlined, 'Collect'),
+        BottomNavItem(Icons.receipt, Icons.receipt_outlined, 'Records'),
+        BottomNavItem(
+          Icons.account_balance,
+          Icons.account_balance_outlined,
+          'Accounts',
+        ),
+      ],
+      pages: [
+        const CollectFeesView(),
+        const FeesRecordsView(),
+        const FeesAccountsView(),
+      ],
+    );
+  }
+}
+
+class LibraryPage extends StatelessWidget {
+  const LibraryPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return PageWithBottomNav(
+      title: 'Library',
+      navItems: [
+        BottomNavItem(Icons.book, Icons.book_outlined, 'Books'),
+        BottomNavItem(Icons.bookmark, Icons.bookmark_outlined, 'Issue'),
+        BottomNavItem(Icons.history, Icons.history_outlined, 'Returns'),
+      ],
+      pages: [const BooksView(), const IssueBookView(), const ReturnBookView()],
+    );
+  }
+}
+
+class TransportPage extends StatelessWidget {
+  const TransportPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return PageWithBottomNav(
+      title: 'Transport',
+      navItems: [
+        BottomNavItem(
+          Icons.directions_bus,
+          Icons.directions_bus_outlined,
+          'Routes',
+        ),
+        BottomNavItem(Icons.person, Icons.person_outlined, 'Drivers'),
+        BottomNavItem(Icons.map, Icons.map_outlined, 'Tracking'),
+      ],
+      pages: [const RoutesView(), const DriversView(), const TrackingView()],
+    );
+  }
+}
+
+class NoticeBoardPage extends StatelessWidget {
+  const NoticeBoardPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return PageWithBottomNav(
+      title: 'Notice Board',
+      navItems: [
+        BottomNavItem(Icons.campaign, Icons.campaign_outlined, 'Notices'),
+        BottomNavItem(Icons.add_circle, Icons.add_circle_outlined, 'Create'),
+        BottomNavItem(Icons.send, Icons.send_outlined, 'Send'),
+      ],
+      pages: [
+        const NoticesView(),
+        const CreateNoticeView(),
+        const SendNoticeView(),
+      ],
+    );
+  }
+}
+
+class AllStudentsView extends StatelessWidget {
+  const AllStudentsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('All Students View'));
+  }
+}
+
+class AddStudentView extends StatelessWidget {
+  const AddStudentView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Add Student View'));
+  }
+}
+
+class IdCardsView extends StatelessWidget {
+  const IdCardsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('ID Cards View'));
+  }
+}
+
+class ExportView extends StatelessWidget {
+  const ExportView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Export View'));
+  }
+}
+
+class AllTeachersView extends StatelessWidget {
+  const AllTeachersView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('All Teachers View'));
+  }
+}
+
+class AddTeacherView extends StatelessWidget {
+  const AddTeacherView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Add Teacher View'));
+  }
+}
+
+class TeacherScheduleView extends StatelessWidget {
+  const TeacherScheduleView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Teacher Schedule View'));
+  }
+}
+
+class TeacherSubjectsView extends StatelessWidget {
+  const TeacherSubjectsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Teacher Subjects View'));
+  }
+}
+
+class AllParentsView extends StatelessWidget {
+  const AllParentsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('All Parents View'));
+  }
+}
+
+class ParentMessagesView extends StatelessWidget {
+  const ParentMessagesView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Parent Messages View'));
+  }
+}
+
+class ParentFeedbackView extends StatelessWidget {
+  const ParentFeedbackView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Parent Feedback View'));
+  }
+}
+
+class MarkAttendanceView extends StatelessWidget {
+  const MarkAttendanceView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Mark Attendance View'));
+  }
+}
+
+class AttendanceRecordsView extends StatelessWidget {
+  const AttendanceRecordsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Attendance Records View'));
+  }
+}
+
+class AttendanceReportsView extends StatelessWidget {
+  const AttendanceReportsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Attendance Reports View'));
+  }
+}
+
+class ExamScheduleView extends StatelessWidget {
+  const ExamScheduleView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Exam Schedule View'));
+  }
+}
+
+class CreateExamView extends StatelessWidget {
+  const CreateExamView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Create Exam View'));
+  }
+}
+
+class SeatingPlanView extends StatelessWidget {
+  const SeatingPlanView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Seating Plan View'));
+  }
+}
+
+class PublishResultsView extends StatelessWidget {
+  const PublishResultsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Publish Results View'));
+  }
+}
+
+class ResultAnalysisView extends StatelessWidget {
+  const ResultAnalysisView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Result Analysis View'));
+  }
+}
+
+class DownloadResultsView extends StatelessWidget {
+  const DownloadResultsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Download Results View'));
+  }
+}
+
+class CollectFeesView extends StatelessWidget {
+  const CollectFeesView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Collect Fees View'));
+  }
+}
+
+class FeesRecordsView extends StatelessWidget {
+  const FeesRecordsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Fees Records View'));
+  }
+}
+
+class FeesAccountsView extends StatelessWidget {
+  const FeesAccountsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Fees Accounts View'));
+  }
+}
+
+class BooksView extends StatelessWidget {
+  const BooksView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Books View'));
+  }
+}
+
+class IssueBookView extends StatelessWidget {
+  const IssueBookView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Issue Book View'));
+  }
+}
+
+class ReturnBookView extends StatelessWidget {
+  const ReturnBookView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Return Book View'));
+  }
+}
+
+class RoutesView extends StatelessWidget {
+  const RoutesView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Routes View'));
+  }
+}
+
+class DriversView extends StatelessWidget {
+  const DriversView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Drivers View'));
+  }
+}
+
+class TrackingView extends StatelessWidget {
+  const TrackingView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Tracking View'));
+  }
+}
+
+class NoticesView extends StatelessWidget {
+  const NoticesView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Notices View'));
+  }
+}
+
+class CreateNoticeView extends StatelessWidget {
+  const CreateNoticeView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Create Notice View'));
+  }
+}
+
+class SendNoticeView extends StatelessWidget {
+  const SendNoticeView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Send Notice View'));
   }
 }
